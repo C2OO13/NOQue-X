@@ -26,8 +26,9 @@ const ClassroomSchema = new mongoose.Schema(
       unique: true,
     },
     adminId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     users: [UserInfo],
   },

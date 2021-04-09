@@ -1,6 +1,11 @@
 const { StatusCodes } = require('http-status-codes');
 const Classroom = require('../models/Classroom');
 
+/**
+ * @desc    to get all classes using adminId
+ * @route   GET /api/classes/:adminId
+ * @access  private
+ */
 exports.getAllClasses = async (req, res) => {
   const adminId = req.params.adminId;
   if (!adminId) {
@@ -18,6 +23,11 @@ exports.getAllClasses = async (req, res) => {
   }
 };
 
+/**
+ * @desc    to create new class
+ * @route   POST /api/classes/:adminId
+ * @access  private
+ */
 exports.createClass = async (req, res) => {
   // TODO: req body validation
   const adminId = req.params.adminId;
@@ -40,4 +50,3 @@ exports.createClass = async (req, res) => {
       .json({ error: 'something went wrong while create new class' });
   }
 };
-

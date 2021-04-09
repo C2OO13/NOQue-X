@@ -3,10 +3,20 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 
+/**
+ * @desc    to check auth status
+ * @route   GET /api/auth/check-auth
+ * @access  private
+ */
 exports.checkAuth = (req, res) => {
   return res.status(StatusCodes.OK).json({ data: req.user });
 };
 
+/**
+ * @desc    to login with google using google auth token
+ * @route   GET /api/auth/:token
+ * @access  public
+ */
 exports.login = async (req, res) => {
   const token = req.params.token;
   const URL = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`;

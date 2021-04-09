@@ -4,12 +4,14 @@ const moment = require('moment');
 const ResponseSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     response: {
       type: String,
       required: true,
+      trim: true,
     },
     score: {
       type: Boolean,
@@ -19,37 +21,28 @@ const ResponseSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const QuestionSchema = new mongoose.Schema(
-  {
-    date: {
-      type: Date,
-      default: moment(Date.now()).format('YYYY-MM-DD'),
-    },
-    questions: [
-      {
-        body: {
-          type: String,
-          required: true,
-        },
-        answer: {
-          type: String,
-          required: true,
-        },
-        responses: [ResponseSchema],
-      },
-    ],
-  },
-  { _id: false }
-);
-
-const MeetQuestionSchema = new mongoose.Schema({
+const QuestionSchema = new mongoose.Schema({
   meetId: {
     type: String,
     required: true,
   },
-  allQuestions: [QuestionSchema],
+  date: {
+    type: Date,
+    default: moment(Date.now()).format('YYYY-MM-DD'),
+  },
+  description: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  answer: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  responses: [ResponseSchema],
 });
 
-const MeetQuestion = mongoose.model('MeetQuestion', MeetQuestionSchema);
+const Question = mongoose.model('Question', QuestionSchema);
 
-module.exports = MeetQuestion;
+module.exports = Question;
