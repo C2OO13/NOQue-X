@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoxwSySwtuS+3/HP3P4Pbbl8/+UqLLcEdftVVOZAYvKu7PAYeSJMdM/5kIg0mob+xiWSPuwnQCUB+NI/uvn+mZ8K1TGhND3eSiqMZF0PezUazTtl/wEu5N4cIeiIzMsGLTMHeKVLPriVWYpvAI3y5D3W79K8T4q2iOSBJQlCdvur89UwpzUmdsAsjcloVWjrBi/Tz0buXp3UxTDFhscveVKB+iHtSkzArXKAUeq37f6rwyGmPECG3Sc9edIiRe3cMLyN0jmGw4sDYmdTleDxtT4nk0hA+EucL2vlqJlL7DBbO/AeF3uO1EfDoBWOC6YVWJLPkjO0z5CHijdACMWDhbQIDAQAB",
+  "name": "lecture inquirer",
+  "description": "lecture inquirer or inspector description",
+  "version": "1.0",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "identity",
+    "identity.email",
+    "https://meet.google.com/*"
+  ],
+  "oauth2": {
+    "client_id": "296248849916-djlggtgrfb7g6ban4bhm2d9at9vvat4i.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+  "browser_action": {
+    "default_popup": "./src/popup/popup.html",
+    "default_title": "lecture inquirer"
+  },
+  "background": {
+    "scripts": ["./src/background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["./src/forground.js"]
+    }
+  ]
+}

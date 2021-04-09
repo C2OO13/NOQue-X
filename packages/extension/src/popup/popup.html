@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../lib/water.light.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div id="loader__container">
+      <div id="loader"></div>
+      <span
+        ><br />
+        Loading...
+      </span>
+    </div>
+    <div id="login__container">
+      <button id="google__btn">
+        <img src="../assets/google.svg" alt="Google logo" />
+        Login with Google
+      </button>
+    </div>
+    <div id="main__container" style="display: none">
+      Logged in success fully
+    </div>
+    <script src="../lib/jquery.js"></script>
+    <script src="../lib/axios.js"></script>
+    <script src="../js/httpInstance.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
