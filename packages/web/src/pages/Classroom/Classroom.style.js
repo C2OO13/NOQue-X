@@ -40,3 +40,9 @@ export const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const ShowQuestionsWrapper = styled.div`
+  .ant-descriptions-item-container {
+    justify-content: center;
+  }
+`;

@@ -78,9 +78,9 @@ exports.getClassInfo = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    console.log(classroom);
     const userCount = classroom.users.length;
     const { _doc } = { ...classroom };
+    delete _doc.users;
     return res.status(StatusCodes.OK).json({ data: { ..._doc, userCount } });
   } catch (err) {
     return res
@@ -98,6 +98,7 @@ exports.getAllStudents = async (req, res) => {
   const classId = req.params.classId;
   try {
     const classroom = await Classroom.findById(classId).select('adminId users');
+    console.log(classroom);
     if (!classroom) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -109,7 +110,12 @@ exports.getAllStudents = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    return res.status(StatusCodes.OK).json({ data: classroom.users });
+
+    // return sorted users by name
+    const sortedUsers = [...classroom.users];
+    sortedUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+    return res.status(StatusCodes.OK).json({ data: sortedUsers });
   } catch (err) {
     console.log(err);
     return res
@@ -217,12 +223,11 @@ exports.addStudents = async (req, res) => {
 
     const allUsers = classroom.users;
 
-    newUsers.forEach((user) => {
-      const found = allUsers.find((_user) => _user.email === user.email);
+    newUsers.forEach(user => {
+      const found = allUsers.find(_user => _user.email === user.email);
       if (!found) allUsers.push(user);
     });
     await classroom.save();
-
 
     // return sorted users by name
     const sortedUsers = [...classroom.users];

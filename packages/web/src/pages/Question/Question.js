@@ -1,75 +1,93 @@
-import { Card, Col, List, Progress, Space } from 'antd';
+import { Card, Col, List, Progress, Space, Spin, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import http from '../../utils/httpInstance';
-import Loading from '../../components/Common/Loading';
 import { LoadingWrapper, QuestionWrapper } from './Question.style';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
-const Question = props => {
+const { Text, Paragraph, Title } = Typography;
+
+const Question = () => {
   const [questiondata, setQuestiondata] = useState({});
-  const [correctAnsCount, setCorrectAnsCount] = useState(0);
-  const [totCount, setTotCount] = useState(0);
+  const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const { questionId } = useParams();
+
   useEffect(() => {
     const getQuestions = async () => {
       try {
         setLoading(true);
-        const data = await (await http.get(`/questions/${questionId}/all`)).data.data;
-        setLoading(false);
+        const {
+          data: { data },
+        } = await http.get(`/questions/${questionId}/all`);
+
+        setStats({
+          correctAnsCount: data.correctAnsCount,
+          incorrectAnsCount: data.incorrectAnsCount,
+          unAttempted: data.totalStudents - data.responses.length,
+          totalStudents: data.totalStudents,
+        });
         console.log('data', data);
-        setCorrectAnsCount(data.responses.filter(e => e.score === true).length);
-        console.log(data.responses[0]);
-        setTotCount(data.responses.length);
         setQuestiondata(data);
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
     };
     getQuestions();
-  }, []);
+  }, [questionId]);
 
   if (loading)
     return (
       <LoadingWrapper>
         <p> Loading... </p>
-        <Loading varient="secondary" />
+        <Spin size="large" />
       </LoadingWrapper>
     );
-
+  const { correctAnsCount, incorrectAnsCount, unAttempted, totalStudents } = stats;
   return (
     <QuestionWrapper>
       <Col lg={{ span: 16, offset: 4 }}>
         <Card bordered={false} className="heading-card">
           <div className="contents">
-            <h1>{questiondata.body}</h1>
-            <br />
-            <p>Answer: {questiondata.answer}</p>
+            <Title>Report Card</Title>
             <p>
-              Correct answer by:
-              <Progress percent={Math.round((correctAnsCount * 100) / totCount)} />
+              <strong>Question:</strong> {questiondata.body}
             </p>
             <p>
+              <strong>Answer:</strong> {questiondata.answer}
+            </p>
+            <Paragraph>
+              Unattempted by:
+              <Progress
+                strokeColor={'#1890ff'}
+                success={{ percent: 0 }}
+                percent={Math.round((unAttempted * 100) / totalStudents)}
+              />
+            </Paragraph>
+            <Paragraph>
+              Correct answer by:
+              <Progress percent={Math.round((correctAnsCount * 100) / totalStudents)} />
+            </Paragraph>
+            <Paragraph>
               Wrong answer by:
               <Progress
-                percent={Math.round(((totCount - correctAnsCount) * 100) / totCount)}
+                percent={Math.round((incorrectAnsCount * 100) / totalStudents)}
                 status="exception"
                 format={percent => `${percent}%`}
               />
-            </p>
+            </Paragraph>
           </div>
         </Card>
 
-        <h1>Student Responses: </h1>
-        <br />
+        <Title>Student Responses: </Title>
         <List
           itemLayout="horizontal"
           bordered
           dataSource={questiondata.responses}
           renderItem={response => (
             <List.Item>
-              <p>
+              <Text>
                 <Space>
                   <span>
                     {response.userId.name}'s response: {response.response}
@@ -82,7 +100,7 @@ const Question = props => {
                     )}
                   </span>
                 </Space>
-              </p>
+              </Text>
             </List.Item>
           )}
         />

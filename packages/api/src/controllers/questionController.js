@@ -122,7 +122,7 @@ exports.getQuestionResponses = async (req, res) => {
 
 /**
  * @desc    to get question info with responses
- * @route   GET /api/questions/:questionId/responses
+ * @route   GET /api/questions/:questionId/all
  * @access  private
  */
 exports.getQuestionsFullInfo = async (req, res) => {
@@ -131,11 +131,19 @@ exports.getQuestionsFullInfo = async (req, res) => {
     const question = await Question.findOne({
       _id: questionId,
     }).populate('responses.userId');
-    console.log(question);
+
     if (!question) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: `Question not found` });
+    }
+    const classroom = await Classroom.findById(question.classroomId).select(
+      'users'
+    );
+    if (!classroom) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Classroom not found` });
     }
     // check for access to view
     if (!question.adminId.equals(req.user._id)) {
@@ -143,7 +151,19 @@ exports.getQuestionsFullInfo = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    return res.status(StatusCodes.OK).json({ data: question });
+    const correctAnsCount = question.responses.filter(e => e.score === true)
+      .length;
+    const incorrectAnsCount = question.responses.filter(e => e.score !== true)
+      .length;
+
+    return res.status(StatusCodes.OK).json({
+      data: {
+        ...question._doc,
+        totalStudents: classroom.users.length,
+        correctAnsCount,
+        incorrectAnsCount,
+      },
+    });
   } catch (err) {
     console.log(err);
     return res
@@ -182,10 +202,10 @@ exports.getQuestionsStats = async (req, res) => {
         .json({ error: `Questions not found` });
     }
     const response = [];
-    questions.forEach((question) => {
+    questions.forEach(question => {
       const attemptedCount = question.responses.length;
-      console.log(attemptedCount);
-      const correctAnsCount = question.responses.filter((e) => e.score === true)
+      // console.log(attemptedCount);
+      const correctAnsCount = question.responses.filter(e => e.score === true)
         .length;
       // console.log(`correctAnsCount ${correctAnsCount}`);
       const wrongAnsCount = attemptedCount - correctAnsCount;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ClassroomWrapper } from './Classroom.style';
-import StudentsList from '../../components/StudentsList';
+import StudentsList from './StudentsList';
 import { Tabs } from 'antd';
 import Stream from './Stream';
 
