@@ -37,7 +37,7 @@ export const ApiMiddleware = ({ getState, dispatch }) => next => async action =>
     } else {
       dispatch({ type: onFailure, payload: err || 'Something went wrong' });
     }
-    return Promise.reject(err || 'Something went wrong');
+    return Promise.reject('Something went wrong');
   }
 };
 export default ApiMiddleware;

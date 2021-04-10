@@ -23,8 +23,7 @@ export const checkAuth = () => ({
   type: API,
   payload: {
     method: 'GET',
-    url: '/api/auth/check-auth',
-    formData: null,
+    url: '/auth/check-auth',
   },
   onRequest: CHECK_AUTH.REQUEST,
   onSuccess: CHECK_AUTH.SUCCESS,

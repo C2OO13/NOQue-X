@@ -18,6 +18,7 @@ const GoogleButton = () => {
       if (event.origin === SERVER_URL && event.data.includes('jwt')) {
         const parsed = queryString.parse(event.data);
         localStorage.setItem('jwt', parsed.jwt);
+        window.location.reload();
         dispatch(checkAuth())
           .then(() => toast.success('Logged In successfully!'))
           .catch(err => toast.error(err));

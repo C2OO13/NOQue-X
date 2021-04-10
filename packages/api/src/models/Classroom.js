@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const UserInfo = new mongoose.Schema(
   {
-    // userId: {
-    //   type: String,
-    //   required: true,
-    // },
     name: {
       type: String,
       required: true,
@@ -20,6 +17,18 @@ const UserInfo = new mongoose.Schema(
 
 const ClassroomSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    batch: {
+      type: Date,
+      default: moment(Date.now()).format('YYYY'),
+    },
     meetId: {
       type: String,
       required: true,

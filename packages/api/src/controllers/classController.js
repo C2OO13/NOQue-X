@@ -14,7 +14,7 @@ exports.getAllClasses = async (req, res) => {
       .json({ error: `adminId required` });
   }
   try {
-    const classes = await Classroom.find({ adminId }).select('meetId');
+    const classes = await Classroom.find({ adminId });
     return res.status(StatusCodes.OK).json({ data: classes });
   } catch (err) {
     return res

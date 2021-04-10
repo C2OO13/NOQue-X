@@ -10,11 +10,11 @@ const errorHandler = (err, req, res, next) => {
     if (err.message === 'jwt expired')
       res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ error: `Verification link expired` });
+        .json({ error: `jwt expired` });
     else
       res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ error: `Invalid email verification link` });
+        .json({ error: `invalid token` });
   } else next();
 };
 

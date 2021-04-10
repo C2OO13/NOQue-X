@@ -9,7 +9,7 @@ const PrivateRoute = ({ ...props }) => {
   return checkingAuthStatus ? (
     <></>
   ) : isAuthenticated ? (
-    <Redirect to={{ pathname: '/dashboard', state: { from: props.location } }} />
+    <Redirect to={{ pathname: '/classes', state: { from: props.location } }} />
   ) : (
     <Route {...props} />
   );
