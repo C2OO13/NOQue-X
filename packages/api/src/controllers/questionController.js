@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const Question = require('../models/Question');
 const Classroom = require('../models/Classroom');
 const Joi = require('joi');
+const moment = require('moment');
 
 /**
  * @desc    to add questions (date must be provided in req.body)
@@ -39,6 +40,7 @@ exports.addQuestions = async (req, res) => {
     // now create new question
     const question = new Question({
       ...value,
+      date: moment(value.date).format('YYYY-MM-DD'),
       meetId: classroom.meetId,
       classroomId: classroom._id,
       adminId: classroom.adminId,

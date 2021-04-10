@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ClassroomWrapper, LoadingWrapper } from './Classroom.style';
 import http from '../../utils/httpInstance';
-import { Card, Col, DatePicker, List, Tabs } from 'antd';
+import { Card, Col, DatePicker, Tabs, Collapse, Divider, Button } from 'antd';
 import moment from 'moment';
 import Loading from '../../components/Common/Loading';
 import StudentsList from '../../components/StudentsList';
 
 import { useParams } from 'react-router';
+import QuestionFormModal from '../../components/QuestionForm';
 
+const { Panel } = Collapse;
 const { TabPane } = Tabs;
 const dateFormat = 'YYYY-MM-DD';
 
@@ -74,35 +76,37 @@ const Classroom = props => {
               <div className="contents">
                 <h1>{classroom.name}</h1>
                 <p>
-                  <a
-                    href={`https://meet.google.com/${classroom.meetId}`}
-                  >{`https://meet.google.com/${classroom.meetId}`}</a>
+                  <a href={`https://meet.google.com/${classroom.meetId}`}>
+                    {`https://meet.google.com/${classroom.meetId}`}
+                  </a>
                 </p>
                 <p>{classroom.description}</p>
                 <p>Batch: {new Date(classroom.batch).getFullYear()}</p>
                 <p>Total Students: {classroom.userCount}</p>
               </div>
             </Card>
-
-            <DatePicker
-              onChange={onDateChange}
-              defaultValue={moment(qdate, dateFormat)}
-              format={dateFormat}
-            />
-
-            <List
-              itemLayout="horizontal"
-              dataSource={questions}
-              renderItem={question => (
-                <List.Item>
-                  <Card title={question.questionDescription}>
-                    <p>Attempted : {question.attemptedCount} </p>
-                    <p>Correct Answer : {question.correctAnsCount} </p>
-                    <p>Wrong Answer : {question.wrongAnsCount} </p>
-                  </Card>
-                </List.Item>
+            
+            <div>
+              All Questions
+              <Divider type="vertical" />
+              <DatePicker
+                onChange={onDateChange}
+                defaultValue={moment(qdate, dateFormat)}
+                format={dateFormat}
+              />
+            </div>
+            
+            <Collapse accordion>
+              {questions.map((question)=>
+                <Panel header={question.questionDescription} key={question.questionId}>
+                  <p>Attempted : {question.attemptedCount} </p>
+                  <p>Correct Answer : {question.correctAnsCount} </p>
+                  <p>Wrong Answer : {question.wrongAnsCount} </p>
+              </Panel>
               )}
-            />
+            </Collapse>
+
+            <QuestionFormModal classroomId={classroom._id} />
           </Col>
         </TabPane>
         <TabPane tab="Students" key="2">
