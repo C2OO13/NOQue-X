@@ -28,6 +28,9 @@ export const ClassroomWrapper = styled.div`
   .ant-tabs-tab {
     font-size: larger;
   }
+  .ant-list-item a {
+    width: 100% !important;
+  }
 `;
 
 export const LoadingWrapper = styled.div`

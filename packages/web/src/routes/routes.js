@@ -6,6 +6,7 @@ import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import RestrictedRoute from './RestrictedRoute';
 import Classroom from '../pages/Classroom/Classroom';
+import Question from '../pages/Question/Question';
 
 const MainRouter = () => (
   <BrowserRouter>
@@ -16,6 +17,8 @@ const MainRouter = () => (
       {/* Private Routes */}
       <PrivateRoute path="/classes" exact component={Classes} />
       <PrivateRoute path="/classes/:classId" component={Classroom} />
+
+      <PrivateRoute path="/questions/:questionId" component={Question} />
 
       {/* Private Routes */}
       <PublicRoute component={() => <div>404, page not found!</div>} />

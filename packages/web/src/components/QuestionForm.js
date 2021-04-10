@@ -14,17 +14,17 @@ const QuestionFormModal = props => {
     setIsModalVisible(true);
   };
 
-  const handleOk = async() => {
-    try{
+  const handleOk = async () => {
+    try {
       const values = await form.validateFields();
       form.resetFields();
       values.date = values.date._d;
       const res = await http.post(`/questions/${classroomId}`, values);
       console.log(res);
       setIsModalVisible(false);
-    //   message.success(`Question added successfully`);
-    }catch(err){
-        console.log(err);
+      //   message.success(`Question added successfully`);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -39,9 +39,9 @@ const QuestionFormModal = props => {
 
   return (
     <>
-      <Button shape="round" size="large" icon={<PlusOutlined />} onClick={showModal} >
+      <Button shape="round" size="large" icon={<PlusOutlined />} onClick={showModal}>
         Add Question
-    </Button>
+      </Button>
       <Modal
         title="Add New Question"
         visible={isModalVisible}
@@ -51,7 +51,7 @@ const QuestionFormModal = props => {
       >
         <Form {...formItemLayout} form={form}>
           <Form.Item
-            label="Body"
+            label="Description"
             name="body"
             rules={[
               {
@@ -77,9 +77,14 @@ const QuestionFormModal = props => {
           <Form.Item
             label="Date"
             name="date"
-            rules={[{ required: true, message: `Date on which question is to be broadcasted is required` }]}
+            rules={[
+              {
+                required: true,
+                message: `Date on which question is to be broadcasted is required`,
+              },
+            ]}
           >
-            <DatePicker  bordered={false} />
+            <DatePicker bordered={false} />
           </Form.Item>
         </Form>
       </Modal>

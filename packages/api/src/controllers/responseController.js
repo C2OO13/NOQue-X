@@ -40,7 +40,7 @@ exports.setResponse = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: `This question doesn't belongs to any classroom` });
     }
-    const haveAccess = classroom.users.find(user => user.email === userEmail);
+    const haveAccess = classroom.users.find((user) => user.email === userEmail);
 
     if (!haveAccess) {
       return res
@@ -50,7 +50,7 @@ exports.setResponse = async (req, res) => {
     const responses = question.responses;
 
     // if user already submitted response for this question
-    const alreadySubmitted = responses.find(resp => resp.userId === userId);
+    const alreadySubmitted = responses.find((resp) => resp.userId === userId);
 
     if (alreadySubmitted) {
       return res

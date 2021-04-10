@@ -1,6 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const Question = require('../models/Question');
 const Classroom = require('../models/Classroom');
+const User = require('../models/User');
 const Joi = require('joi');
 const moment = require('moment');
 
@@ -111,6 +112,38 @@ exports.getQuestionResponses = async (req, res) => {
         .json({ error: `You don't have access to view this class` });
     }
     return res.status(StatusCodes.OK).json({ data: question.responses });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'something went wrong while getting question details' });
+  }
+};
+
+/**
+ * @desc    to get question info with responses
+ * @route   GET /api/questions/:questionId/responses
+ * @access  private
+ */
+exports.getQuestionsFullInfo = async (req, res) => {
+  const questionId = req.params.questionId;
+  try {
+    const question = await Question.findOne({
+      _id: questionId,
+    }).populate('responses.userId');
+    console.log(question);
+    if (!question) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Question not found` });
+    }
+    // check for access to view
+    if (!question.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
+    }
+    return res.status(StatusCodes.OK).json({ data: question });
   } catch (err) {
     console.log(err);
     return res
