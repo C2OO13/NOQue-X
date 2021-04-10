@@ -97,7 +97,7 @@ exports.getClassInfo = async (req, res) => {
 exports.getAllStudents = async (req, res) => {
   const classId = req.params.classId;
   try {
-    const classroom = await Classroom.findById(classId).select('users');
+    const classroom = await Classroom.findById(classId).select('adminId users');
     if (!classroom) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -111,6 +111,7 @@ exports.getAllStudents = async (req, res) => {
     }
     return res.status(StatusCodes.OK).json({ data: classroom.users });
   } catch (err) {
+    console.log(err);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: 'something went wrong while getting students list' });
@@ -206,7 +207,7 @@ exports.addStudents = async (req, res) => {
   const newUsers = value.users;
 
   try {
-    const classroom = await Classroom.findById(classId).select('users');
+    const classroom = await Classroom.findById(classId).select('users adminId');
     // check for access to view
     if (!classroom.adminId.equals(req.user._id)) {
       return res
@@ -218,12 +219,10 @@ exports.addStudents = async (req, res) => {
 
     newUsers.forEach((user) => {
       const found = allUsers.find((_user) => _user.email === user.email);
-      console.log(found);
       if (!found) allUsers.push(user);
     });
     await classroom.save();
 
-    console.log(classroom.users);
 
     // return sorted users by name
     const sortedUsers = [...classroom.users];
