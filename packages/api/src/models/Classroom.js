@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
 
 const UserInfo = new mongoose.Schema(
   {
@@ -27,7 +26,7 @@ const ClassroomSchema = new mongoose.Schema(
     },
     batch: {
       type: Date,
-      default: moment(Date.now()).format('YYYY'),
+      required: true,
     },
     meetId: {
       type: String,

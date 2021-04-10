@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import 'antd/dist/antd.css';
-import { Card, List, Menu, Layout, Button, Col } from 'antd';
-import { useSelector } from 'react-redux';
 import http from '../../utils/httpInstance';
+import { Card, List, Layout, Col } from 'antd';
+import { useSelector } from 'react-redux';
 import { ClassesWrapper } from './Classes.style';
 import Navigation from '../../components/Navigation';
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 
 const Classes = () => {
   const [classes, setClasses] = useState([]);
   const user = useSelector(state => state.auth.user);
-  console.log(user);
   useEffect(() => {
     const getClasses = async () => {
       try {
         const data = await (await http.get(`/classes/${user._id}`)).data.data;
-        // setTitle([...title, data.name]);;
         console.log(data);
         setClasses(data);
       } catch (err) {
@@ -23,7 +20,7 @@ const Classes = () => {
       }
     };
     getClasses();
-  }, []);
+  }, [user._id]);
 
   return (
     <ClassesWrapper>

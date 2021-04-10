@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
   if (authorizationHeader) {
     token = authorizationHeader.split(' ')[1];
   }
-  if (token) {
+  if (token && token !== 'null') {
     try {
       const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
       const user = await User.findById(decoded._id);
