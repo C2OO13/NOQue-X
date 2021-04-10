@@ -6,7 +6,7 @@ const http = axios.create({
   withCredentials: true,
 });
 
-http.interceptors.response.use(undefined, error => {
+http.interceptors.response.use(undefined, (error) => {
   if (axios.isCancel(error)) {
     console.log(`request cancelled`);
   }

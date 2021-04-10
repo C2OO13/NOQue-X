@@ -35,6 +35,10 @@ const QuestionSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     required: true,
     ref: 'User',
+  },  
+  broadcasted:{
+    type: Boolean,
+    default: false
   },
   broadcasted: {
     type: Boolean,

@@ -129,16 +129,3 @@ io.on('connection', (socket) => {
     }
   });
 });
-
-// console.log(socket.rooms)
-
-// https://stackoverflow.com/a/6967755/11922517
-// to get all the clients of the room
-// io.sockets.clients(roomName)
-
-//https://stackoverflow.com/a/61133712/11922517
-//https://socket.io/docs/v4/rooms/
-// to send msg to single client
-// useful to send logs
-// or joining msg instead of sending to all the clients
-//    io.to(socket.id).emit('private', 'you're secret code is ' + code);
