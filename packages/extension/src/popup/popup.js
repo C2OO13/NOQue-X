@@ -107,7 +107,6 @@ const checkAdminAccess = async (meetId) => {
   }
 };
 
-<<<<<<< HEAD
 const checkAuth = async () => {
   try {
     const { data: response } = await http.get(`/auth/check-auth`);
@@ -122,21 +121,6 @@ const checkAuth = async () => {
 /**
  * Event listeners
  */
-=======
-$('#logout_btn').click(() => {
-  chrome.identity.getAuthToken({ interactive: true }, async (token) => {
-    console.log(token);
-    chrome.identity.removeCachedAuthToken({ token: token }, function () {
-      alert('removed');
-    });
-    localStorage.removeItem('jwt');
-    setVisible('#login__container', true);
-    setVisible('#main__container', false);
-  });
-});
-
-// Event listeners
->>>>>>> 6cba8b63aa0fe4feeab28647af04f5b983aa6d53
 $('#google__btn').click(() => {
   chrome.identity.getAuthToken({ interactive: false }, async (token) => {
     if (chrome.runtime.lastError) {
@@ -146,16 +130,9 @@ $('#google__btn').click(() => {
     try {
       const { data: response } = await http.get(`/auth/${token}`);
       user = response.data.user;
-<<<<<<< HEAD
       console.log('User is ', user);
       setVisible('#login__container', 'none');
       setVisible('#main__container', 'block');
-=======
-      localStorage.setItem('jwt', response.data.token);
-      console.log('User is ', user);
-      setVisible('#login__container', false);
-      setVisible('#main__container', true);
->>>>>>> 6cba8b63aa0fe4feeab28647af04f5b983aa6d53
     } catch (err) {
       console.log('error: ', err);
     }
