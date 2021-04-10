@@ -26,11 +26,22 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  classroomId: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: 'Classroom',
+  },
+  adminId: {
+    // ! required to check access to view this question
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
   date: {
     type: Date,
     default: moment(Date.now()).format('YYYY-MM-DD'),
   },
-  description: {
+  body: {
     type: String,
     required: true,
     trim: true,

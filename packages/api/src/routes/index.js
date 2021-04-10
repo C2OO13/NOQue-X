@@ -9,8 +9,8 @@ router.use('/auth', authRoutes);
 
 router.use('/classes', auth, classroomRoutes);
 
-router.use('/responses', responseRoutes);
+router.use('/responses', auth, responseRoutes);
 
-router.use('/questions', questionRoutes);
+router.use('/questions', auth, questionRoutes);
 
 module.exports = router;

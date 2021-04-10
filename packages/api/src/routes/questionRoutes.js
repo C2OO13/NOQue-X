@@ -1,8 +1,12 @@
 const router = require('express').Router();
 const questionController = require('../controllers/questionController');
 
-router.post('/:meetId', questionController.addQuestions);
+router.post('/:classroomId', questionController.addQuestions);
 
-router.get('/:meetId/:date', questionController.getQuestionDetails);
+router.get('/:questionId/info', questionController.getQuestionDetails);
+
+router.get('/:questionId/responses', questionController.getQuestionResponses);
+
+router.get('/:classroomId/stats/:date', questionController.getQuestionsStats);
 
 module.exports = router;

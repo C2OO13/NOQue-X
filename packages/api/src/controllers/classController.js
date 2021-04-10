@@ -62,11 +62,19 @@ exports.createClass = async (req, res) => {
 exports.getClassInfo = async (req, res) => {
   const classId = req.params.classId;
   try {
-    const classroom = await Classroom.findById(classId).select('-users');
+    const classroom = await Classroom.findOne({
+      _id: classId,
+    }).select('-users');
     if (!classroom) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: `Classroom not found` });
+    }
+    // check for access to view
+    if (!classroom.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
     }
     return res.status(StatusCodes.OK).json({ data: classroom });
   } catch (err) {
@@ -89,6 +97,12 @@ exports.getAllStudents = async (req, res) => {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: `Classroom not found` });
+    }
+    // check for access to view
+    if (!classroom.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
     }
     return res.status(StatusCodes.OK).json({ data: classroom.users });
   } catch (err) {
@@ -124,7 +138,12 @@ exports.addAStudent = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: `Classroom not found` });
     }
-
+    // check for access to view
+    if (!_classroom.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
+    }
     const classroom = await Classroom.findOneAndUpdate(
       { _id: classId, 'users.email': { $ne: value.email } },
       {
@@ -183,6 +202,12 @@ exports.addStudents = async (req, res) => {
 
   try {
     const classroom = await Classroom.findById(classId).select('users');
+    // check for access to view
+    if (!classroom.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
+    }
 
     const allUsers = classroom.users;
 
