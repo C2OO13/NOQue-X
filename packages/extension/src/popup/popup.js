@@ -22,10 +22,10 @@ $(document).ready(async () => {
 const checkAuth = async () => {
   try {
     const { data: response } = await http.get(`/auth/check-auth`);
-    // console.log(response);
+    console.log(response);
     return Promise.resolve(response);
   } catch (err) {
-    console.log('error', error);
+    console.log('error', err);
     return Promise.reject(err);
   }
 };
@@ -42,9 +42,21 @@ const setVisible = (selector, visible) => {
   }
 };
 
+$('#logout_btn').click(() => {
+  chrome.identity.getAuthToken({ interactive: true }, async (token) => {
+    console.log(token);
+    chrome.identity.removeCachedAuthToken({ token: token }, function () {
+      alert('removed');
+    });
+    localStorage.removeItem('jwt');
+    setVisible('#login__container', true);
+    setVisible('#main__container', false);
+  });
+});
+
 // Event listeners
 $('#google__btn').click(() => {
-  chrome.identity.getAuthToken({ interactive: true }, async token => {
+  chrome.identity.getAuthToken({ interactive: false }, async (token) => {
     if (chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError.message);
       return;
@@ -53,6 +65,7 @@ $('#google__btn').click(() => {
       const { data: response } = await http.get(`/auth/${token}`);
       user = response.data.user;
       localStorage.setItem('jwt', response.data.token);
+      console.log('User is ', user);
       setVisible('#login__container', false);
       setVisible('#main__container', true);
     } catch (err) {

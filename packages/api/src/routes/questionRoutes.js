@@ -10,4 +10,6 @@ router.get('/:questionId/responses', questionController.getQuestionResponses);
 
 router.get('/:classroomId/stats/:date', questionController.getQuestionsStats);
 
+router.get('/:meetId/today',questionController.getTodayQuestions);
+
 module.exports = router;

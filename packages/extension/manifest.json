@@ -24,7 +24,12 @@
     "default_title": "lecture inquirer"
   },
   "background": {
-    "scripts": ["./src/background.js"],
+    "scripts": [
+      "./src/lib/axios.js",
+      "./src/js/httpInstance.js",
+      "./src/lib/socket.io.js",
+      "./src/background.js"
+    ],
     "persistent": false
   },
   "content_scripts": [

@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const apiRouter = require('./routes');
 const errorHandler = require('./middlewares/errorHandlers');
 const passport = require('passport');
+const socket = require('socket.io');
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,4 +32,13 @@ app.use(passport.initialize());
 // error handling
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`listening on http://localhost:${PORT}`));
+const server = app.listen(PORT, () =>
+  console.log(`listening on http://localhost:${PORT}`)
+);
+exports.io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  },
+});
+
+require('./sockets');

@@ -151,9 +151,9 @@ exports.getQuestionsFullInfo = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    const correctAnsCount = question.responses.filter(e => e.score === true)
+    const correctAnsCount = question.responses.filter((e) => e.score === true)
       .length;
-    const incorrectAnsCount = question.responses.filter(e => e.score !== true)
+    const incorrectAnsCount = question.responses.filter((e) => e.score !== true)
       .length;
 
     return res.status(StatusCodes.OK).json({
@@ -202,10 +202,10 @@ exports.getQuestionsStats = async (req, res) => {
         .json({ error: `Questions not found` });
     }
     const response = [];
-    questions.forEach(question => {
+    questions.forEach((question) => {
       const attemptedCount = question.responses.length;
       // console.log(attemptedCount);
-      const correctAnsCount = question.responses.filter(e => e.score === true)
+      const correctAnsCount = question.responses.filter((e) => e.score === true)
         .length;
       // console.log(`correctAnsCount ${correctAnsCount}`);
       const wrongAnsCount = attemptedCount - correctAnsCount;
@@ -219,6 +219,42 @@ exports.getQuestionsStats = async (req, res) => {
       });
     });
     return res.status(StatusCodes.OK).json({ data: response });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'something went wrong while getting questions' });
+  }
+};
+
+// used in extension
+exports.getTodayQuestions = async (req, res) => {
+  const { meetId } = req.params;
+  const date = moment(Date.now()).format('YYYY-MM-DD');
+  try {
+    // check class exists or not
+    const classroom = await Classroom.findOne({ meetId }).select('-users');
+
+    if (!classroom) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Classroom with given meetId not found` });
+    }
+    // check for access to add questions in this classrooom
+    if (!classroom.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
+    }
+
+    const questions = await Question.find({ meetId, date });
+    // console.log(questions);
+    if (!questions) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: `Questions not found` });
+    }
+    return res.status(StatusCodes.OK).json({ data: questions });
   } catch (err) {
     console.log(err);
     return res

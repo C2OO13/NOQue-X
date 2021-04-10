@@ -1,1 +1,2 @@
-document.body.style.backgroundColor = 'lightblue';
+console.log('Hello Google Meet!');
+// open modal

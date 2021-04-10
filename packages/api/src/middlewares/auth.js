@@ -14,13 +14,13 @@ const auth = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
       const user = await User.findById(decoded._id);
       if (!user) {
-        res.status(StatusCodes.UNAUTHORIZED).json({
+        return res.status(StatusCodes.UNAUTHORIZED).json({
           error: 'Unauthorized user!',
         });
       } else {
         req.user = user;
+        next();
       }
-      next();
     } catch (err) {
       console.log(err);
       next(err);
