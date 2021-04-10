@@ -97,7 +97,7 @@ exports.getClassInfo = async (req, res) => {
 exports.getAllStudents = async (req, res) => {
   const classId = req.params.classId;
   try {
-    const classroom = await Classroom.findById(classId).select('users');
+    const classroom = await Classroom.findById(classId).select('adminId users');
     if (!classroom) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -111,6 +111,7 @@ exports.getAllStudents = async (req, res) => {
     }
     return res.status(StatusCodes.OK).json({ data: classroom.users });
   } catch (err) {
+    console.log(err);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: 'something went wrong while getting students list' });

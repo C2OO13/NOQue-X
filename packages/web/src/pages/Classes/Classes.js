@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import http from '../../utils/httpInstance';
-import { Card, List, Layout, Col } from 'antd';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { getClasses } from '../../store/ducks';
+import { Card, List, Layout, Col, message } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { ClassesWrapper } from './Classes.style';
 import Navigation from '../../components/Navigation';
 const { Content } = Layout;
 
 const Classes = () => {
-  const [classes, setClasses] = useState([]);
-  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch(() => getClasses());
+  const { classes } = useSelector(state => state.classes);
+
   useEffect(() => {
     const getClass = async () => {
       try {
-        const data = await (await http.get(`/classes`)).data.data;
-        console.log(data);
-        setClasses(data);
+        dispatch(getClasses());
       } catch (err) {
-        console.log(err);
+        message.error(err);
       }
     };
     getClass();
-  }, [user]);
+  }, [dispatch]);
 
   return (
     <ClassesWrapper>
