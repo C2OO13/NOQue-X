@@ -10,7 +10,9 @@ const Joi = require('joi');
 exports.getAllClasses = async (req, res) => {
   const adminId = req.user._id;
   try {
-    const classes = await Classroom.find({ adminId });
+    const classes = await Classroom.find({ adminId }).select(
+      'meetId name batch'
+    );
     return res.status(StatusCodes.OK).json({ data: classes });
   } catch (err) {
     return res
@@ -64,7 +66,7 @@ exports.getClassInfo = async (req, res) => {
   try {
     const classroom = await Classroom.findOne({
       _id: classId,
-    }).select('-users');
+    });
     if (!classroom) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -76,7 +78,10 @@ exports.getClassInfo = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    return res.status(StatusCodes.OK).json({ data: classroom });
+    console.log(classroom);
+    const userCount = classroom.users.length;
+    const { _doc } = { ...classroom };
+    return res.status(StatusCodes.OK).json({ data: { ..._doc, userCount } });
   } catch (err) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -211,8 +216,8 @@ exports.addStudents = async (req, res) => {
 
     const allUsers = classroom.users;
 
-    newUsers.forEach(user => {
-      const found = allUsers.find(_user => _user.email === user.email);
+    newUsers.forEach((user) => {
+      const found = allUsers.find((_user) => _user.email === user.email);
       console.log(found);
       if (!found) allUsers.push(user);
     });

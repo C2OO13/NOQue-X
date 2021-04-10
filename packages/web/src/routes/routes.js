@@ -14,8 +14,8 @@ const MainRouter = () => (
       <RestrictedRoute path="/" exact component={Login} />
 
       {/* Private Routes */}
-      <PrivateRoute path="/classes" component={Classes} />
-      <PrivateRoute path="/classroom" component={Classroom} />
+      <PrivateRoute path="/classes" exact component={Classes} />
+      <PrivateRoute path="/classes/:classId" component={Classroom} />
 
       {/* Private Routes */}
       <PublicRoute component={() => <div>404, page not found!</div>} />

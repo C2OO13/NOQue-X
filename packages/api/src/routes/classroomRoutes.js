@@ -13,5 +13,4 @@ router.patch('/:classId/students', classController.addStudents);
 
 router.patch('/:classId/student', classController.addAStudent);
 
-
 module.exports = router;

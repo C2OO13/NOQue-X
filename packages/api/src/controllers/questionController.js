@@ -147,16 +147,17 @@ exports.getQuestionsStats = async (req, res) => {
         .json({ error: `Questions not found` });
     }
     const response = [];
-    questions.forEach(question => {
+    questions.forEach((question) => {
       const attemptedCount = question.responses.length;
-      // console.log(`attemptedCount ${attemptedCount}`);
-      const correctAnsCount = question.responses.filter(e => e.score === true)
+      console.log(attemptedCount);
+      const correctAnsCount = question.responses.filter((e) => e.score === true)
         .length;
       // console.log(`correctAnsCount ${correctAnsCount}`);
       const wrongAnsCount = attemptedCount - correctAnsCount;
 
       response.push({
         questionId: question._id,
+        questionDescription: question.body,
         attemptedCount,
         correctAnsCount,
         wrongAnsCount,

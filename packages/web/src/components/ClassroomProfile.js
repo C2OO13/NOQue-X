@@ -1,7 +1,7 @@
 import { Card } from 'antd';
 import React from 'react';
 
-const ClassroomProfile = () => {
+const ClassroomProfile = (props) => {
     return (
     <div className="site-card-border-less-wrapper">
         <Card title="Card title" bordered={false} style={{ width: 300 }}>
