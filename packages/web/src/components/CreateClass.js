@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Modal, Button, Input, Form, DatePicker } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-// import http from '../utils/httpInstance';
+import http from '../utils/httpInstance';
+import { useDispatch } from 'react-redux';
+import { getClasses } from '../store/ducks';
 const { TextArea } = Input;
 
 const CreateClassModal = () => {
+  const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -12,17 +15,18 @@ const CreateClassModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then(values => {
-        form.resetFields();
-        values.batch = values.batch._d;
-        setIsModalVisible(false);
-      })
-      .catch(info => {
-        console.log(info);
-      });
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      form.resetFields();
+      values.batch = values.batch._d;
+      await http.post('/classes', values);
+      setIsModalVisible(false);
+      message.success(`Class created successfully`);
+      dispatch(getClasses());
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // form's stuff
