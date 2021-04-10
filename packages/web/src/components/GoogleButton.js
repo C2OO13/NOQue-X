@@ -3,7 +3,6 @@ import { Button } from 'antd';
 import { GoogleOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import { SERVER_URL } from '../config';
-import queryString from 'query-string';
 import { checkAuth } from '../store/ducks';
 import toast from 'react-hot-toast';
 
@@ -15,10 +14,7 @@ const GoogleButton = () => {
 
   const succssEventListener = useCallback(() => {
     window.addEventListener('message', event => {
-      if (event.origin === SERVER_URL && event.data.includes('jwt')) {
-        const parsed = queryString.parse(event.data);
-        localStorage.setItem('jwt', parsed.jwt);
-        window.location.reload();
+      if (event.origin === SERVER_URL && event.data===('success')) {
         dispatch(checkAuth())
           .then(() => toast.success('Logged In successfully!'))
           .catch(err => toast.error(err));

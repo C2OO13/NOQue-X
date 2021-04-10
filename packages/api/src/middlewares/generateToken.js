@@ -13,18 +13,26 @@ const generateToken = (req, res) => {
   const token = jwt.sign(userData, process.env.JWT_TOKEN_SECRET, {
     expiresIn: '7h',
   });
-  const OAuthSuccessPage = `
+
+  return res
+    .status(StatusCodes.OK)
+    .cookie('jwt', token, {
+      maxAge: 7 * 60 * 60 * 1000,
+      httpOnly: true,
+    })
+    .send(OAuthSuccessPage);
+};
+
+const OAuthSuccessPage = `
   <html>
     <head>
     </head>
     <body>
       <script>
       window.onload = window.close();
-      window.opener.postMessage('?jwt=${token}', '${CLIENT_URL}');
+      window.opener.postMessage('success', '${CLIENT_URL}');
       </script>
     </body>
-  </html>`;
-  return res.status(StatusCodes.OK).send(OAuthSuccessPage);
-};
+</html>`;
 
 module.exports = generateToken;

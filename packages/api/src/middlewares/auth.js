@@ -1,26 +1,23 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
+const { cookieExtractor } = require('../utils');
 
 const auth = async (req, res, next) => {
-  const authorizationHeader = req.headers['authorization'];
-  let token;
-
-  if (authorizationHeader) {
-    token = authorizationHeader.split(' ')[1];
-  }
-  if (token && token !== 'null') {
+  console.log(req.cookies);
+  const token = cookieExtractor(req);
+  if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
       const user = await User.findById(decoded._id);
       if (!user) {
-        res.status(StatusCodes.UNAUTHORIZED).json({
+        return res.status(StatusCodes.UNAUTHORIZED).json({
           error: 'Unauthorized user!',
         });
       } else {
         req.user = user;
+        next();
       }
-      next();
     } catch (err) {
       console.log(err);
       next(err);

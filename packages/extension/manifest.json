@@ -5,7 +5,9 @@
   "description": "lecture inquirer or inspector description",
   "version": "1.0",
   "permissions": [
+    "cookies",
     "storage",
+    "downloads",
     "activeTab",
     "tabs",
     "identity",
@@ -24,13 +26,22 @@
     "default_title": "lecture inquirer"
   },
   "background": {
-    "scripts": ["./src/background.js"],
+    "scripts": [
+      "./src/lib/axios.js",
+      "./src/js/httpInstance.js",
+      "./src/lib/socket.io.js",
+      "./src/background.js"
+    ],
     "persistent": false
   },
   "content_scripts": [
     {
       "matches": ["https://meet.google.com/*"],
-      "js": ["./src/forground.js"]
+      "js": ["./src/lib/jquery.js", "./src/forground.js"],
+      "css": ["./src/lib/water.light.css"],
+      "run_at": "document_idle",
+      "all_frames": false
     }
-  ]
+  ],
+  "web_accessible_resources": ["src/modal.html"]
 }

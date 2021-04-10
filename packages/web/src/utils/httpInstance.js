@@ -4,10 +4,7 @@ import { SERVER_URL } from '../config';
 const instance = axios.create({
   baseURL: SERVER_URL + '/api',
   timeout: 3000,
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-  },
+  withCredentials: true,
 });
 
 instance.interceptors.response.use(undefined, error => {

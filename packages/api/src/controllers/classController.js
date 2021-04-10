@@ -3,6 +3,33 @@ const Classroom = require('../models/Classroom');
 const Joi = require('joi');
 
 /**
+ * @desc    to check admin access of user by meetId
+ * @route   GET /api/classes/acccess/:meetId
+ * @access  private
+ */
+exports.checkAdminAccess = async (req, res) => {
+  const meetId = req.params.meetId;
+  try {
+    const classroom = await Classroom.findOne({ meetId });
+    if (!classroom) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Classroom not found` });
+    }
+    let access = false;
+    if (classroom.adminId.equals(req.user._id)) {
+      access = true;
+    }
+    res.status(StatusCodes.OK).json({ data: { access } });
+  } catch (err) {
+    console.log(err);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: 'something went wrong while checking your access for this meet',
+    });
+  }
+};
+
+/**
  * @desc    to get all classes using adminId
  * @route   GET /api/classes/
  * @access  private
@@ -78,9 +105,9 @@ exports.getClassInfo = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    console.log(classroom);
     const userCount = classroom.users.length;
     const { _doc } = { ...classroom };
+    delete _doc.users;
     return res.status(StatusCodes.OK).json({ data: { ..._doc, userCount } });
   } catch (err) {
     return res
@@ -98,6 +125,7 @@ exports.getAllStudents = async (req, res) => {
   const classId = req.params.classId;
   try {
     const classroom = await Classroom.findById(classId).select('adminId users');
+    console.log(classroom);
     if (!classroom) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -109,7 +137,12 @@ exports.getAllStudents = async (req, res) => {
         .status(StatusCodes.FORBIDDEN)
         .json({ error: `You don't have access to view this class` });
     }
-    return res.status(StatusCodes.OK).json({ data: classroom.users });
+
+    // return sorted users by name
+    const sortedUsers = [...classroom.users];
+    sortedUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+    return res.status(StatusCodes.OK).json({ data: sortedUsers });
   } catch (err) {
     console.log(err);
     return res
@@ -217,12 +250,11 @@ exports.addStudents = async (req, res) => {
 
     const allUsers = classroom.users;
 
-    newUsers.forEach((user) => {
-      const found = allUsers.find((_user) => _user.email === user.email);
+    newUsers.forEach(user => {
+      const found = allUsers.find(_user => _user.email === user.email);
       if (!found) allUsers.push(user);
     });
     await classroom.save();
-
 
     // return sorted users by name
     const sortedUsers = [...classroom.users];

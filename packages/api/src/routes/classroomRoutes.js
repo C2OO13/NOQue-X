@@ -5,6 +5,8 @@ router.get('/', classController.getAllClasses);
 
 router.post('/', classController.createClass);
 
+router.get('/access/:meetId', classController.checkAdminAccess);
+
 router.get('/:classId/info', classController.getClassInfo);
 
 router.get('/:classId/students', classController.getAllStudents);

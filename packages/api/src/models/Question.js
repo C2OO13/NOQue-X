@@ -32,10 +32,17 @@ const QuestionSchema = new mongoose.Schema({
     ref: 'Classroom',
   },
   adminId: {
-    // ! required to check access to view this question
     type: mongoose.Types.ObjectId,
     required: true,
     ref: 'User',
+  },
+  broadcasted: {
+    type: Boolean,
+    default: false,
+  },
+  responseTime: {
+    type: Number,
+    default: 30,
   },
   date: {
     type: Date,

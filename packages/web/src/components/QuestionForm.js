@@ -1,30 +1,43 @@
 import React, { useState } from 'react';
-import { Modal, Button, Input, Form, DatePicker } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, message, InputNumber } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import http from '../utils/httpInstance';
+import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { getQuestions } from '../store/ducks';
+import styled from 'styled-components';
 
+const dateFormat = 'YYYY-MM-DD';
 const { TextArea } = Input;
 
-const QuestionFormModal = props => {
+const FormWarpper = styled.div`
+  #add--question {
+    margin: 40px auto 80px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const QuestionFormModal = ({ classId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const classroomId = props.classroomId;
-  console.log(classroomId);
+  const dispatch = useDispatch();
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = async() => {
-    try{
+  const handleOk = async () => {
+    try {
       const values = await form.validateFields();
       form.resetFields();
       values.date = values.date._d;
-      const res = await http.post(`/questions/${classroomId}`, values);
-      console.log(res);
+      await http.post(`/questions/${classId}`, values);
+      dispatch(getQuestions({ classId, qdate: moment(values.date).format(dateFormat) }));
+      message.success(`Question added successfully`);
       setIsModalVisible(false);
-    //   message.success(`Question added successfully`);
-    }catch(err){
-        console.log(err);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -38,10 +51,18 @@ const QuestionFormModal = props => {
   };
 
   return (
-    <>
-      <Button shape="round" size="large" icon={<PlusOutlined />} onClick={showModal} >
+    <FormWarpper>
+      <Button
+        danger
+        type="primary"
+        id="add--question"
+        shape="round"
+        size="large"
+        icon={<PlusOutlined />}
+        onClick={showModal}
+      >
         Add Question
-    </Button>
+      </Button>
       <Modal
         title="Add New Question"
         visible={isModalVisible}
@@ -51,16 +72,16 @@ const QuestionFormModal = props => {
       >
         <Form {...formItemLayout} form={form}>
           <Form.Item
-            label="Body"
+            label="Description"
             name="body"
             rules={[
               {
                 required: true,
-                message: 'Body is Required',
+                message: 'Description is Required',
               },
             ]}
           >
-            <Input />
+            <TextArea showCount maxLength={100} />
           </Form.Item>
           <Form.Item
             label="Answer"
@@ -77,13 +98,30 @@ const QuestionFormModal = props => {
           <Form.Item
             label="Date"
             name="date"
-            rules={[{ required: true, message: `Date on which question is to be broadcasted is required` }]}
+            rules={[
+              {
+                required: true,
+                message: `Date on which question is to be broadcasted is required`,
+              },
+            ]}
           >
-            <DatePicker  bordered={false} />
+            <DatePicker bordered={false} />
+          </Form.Item>
+          <Form.Item
+            label="Response time"
+            name="responseTime"
+            rules={[
+              {
+                required: true,
+                message: `Time to respond a question is required`,
+              },
+            ]}
+          >
+            <InputNumber style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>
-    </>
+    </FormWarpper>
   );
 };
 

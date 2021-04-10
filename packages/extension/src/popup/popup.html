@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="../lib/water.light.css" />
+    <!-- <link rel="stylesheet" href="../lib/bootstrap.min.css"> -->
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
@@ -20,11 +21,19 @@
       </button>
     </div>
     <div id="main__container" style="display: none">
-      Logged in success fully
+      <div id="main__header">
+        <a href="http://localhost:3000" target="__blank">Go to dashboard</a>
+        <button id="logout_btn">Logout</button>
+      </div>
+      <div id="questions__list"></div>
+      <div id="message"></div>
+      <div id="error"></div>
     </div>
     <script src="../lib/jquery.js"></script>
+    <!-- <script src="../lib/bootstrap.min.js"></script> -->
     <script src="../lib/axios.js"></script>
     <script src="../js/httpInstance.js"></script>
     <script src="popup.js"></script>
+    <script src="questions.js"></script>
   </body>
 </html>

@@ -44,12 +44,20 @@ exports.login = async (req, res) => {
     const token = jwt.sign(userData, process.env.JWT_TOKEN_SECRET, {
       expiresIn: '7h',
     });
-    return res.status(StatusCodes.OK).json({
-      data: {
-        user: userData,
-        token,
-      },
-    });
+    return res
+      .status(StatusCodes.OK)
+      .cookie('jwt', token, {
+        maxAge: 7 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+      })
+      .json({
+        data: {
+          user: userData,
+          token,
+        },
+      });
   } catch (err) {
     console.log(err);
     return res

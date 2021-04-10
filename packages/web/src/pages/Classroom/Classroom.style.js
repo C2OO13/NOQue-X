@@ -28,6 +28,9 @@ export const ClassroomWrapper = styled.div`
   .ant-tabs-tab {
     font-size: larger;
   }
+  .ant-list-item a {
+    width: 100% !important;
+  }
 `;
 
 export const LoadingWrapper = styled.div`
@@ -36,4 +39,10 @@ export const LoadingWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+export const ShowQuestionsWrapper = styled.div`
+  .ant-descriptions-item-container {
+    justify-content: center;
+  }
 `;

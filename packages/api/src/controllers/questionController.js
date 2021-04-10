@@ -1,6 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const Question = require('../models/Question');
 const Classroom = require('../models/Classroom');
+const User = require('../models/User');
 const Joi = require('joi');
 const moment = require('moment');
 
@@ -16,6 +17,7 @@ exports.addQuestions = async (req, res) => {
     body: Joi.string().required(),
     answer: Joi.string().required(),
     date: Joi.string().required(),
+    responseTime: Joi.number().integer(),
   }).validate(req.body);
 
   if (error) {
@@ -120,6 +122,58 @@ exports.getQuestionResponses = async (req, res) => {
 };
 
 /**
+ * @desc    to get question info with responses
+ * @route   GET /api/questions/:questionId/all
+ * @access  private
+ */
+exports.getQuestionsFullInfo = async (req, res) => {
+  const questionId = req.params.questionId;
+  try {
+    const question = await Question.findOne({
+      _id: questionId,
+    }).populate('responses.userId');
+
+    if (!question) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Question not found` });
+    }
+    const classroom = await Classroom.findById(question.classroomId).select(
+      'users'
+    );
+    if (!classroom) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Classroom not found` });
+    }
+    // check for access to view
+    if (!question.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
+    }
+    const correctAnsCount = question.responses.filter((e) => e.score === true)
+      .length;
+    const incorrectAnsCount = question.responses.filter((e) => e.score !== true)
+      .length;
+
+    return res.status(StatusCodes.OK).json({
+      data: {
+        ...question._doc,
+        totalStudents: classroom.users.length,
+        correctAnsCount,
+        incorrectAnsCount,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'something went wrong while getting question details' });
+  }
+};
+
+/**
  * @desc    to get all questions responses stats by date
  * @route   GET /api/questions/:classroomId/stats/:date
  * @access  private
@@ -151,7 +205,7 @@ exports.getQuestionsStats = async (req, res) => {
     const response = [];
     questions.forEach((question) => {
       const attemptedCount = question.responses.length;
-      console.log(attemptedCount);
+      // console.log(attemptedCount);
       const correctAnsCount = question.responses.filter((e) => e.score === true)
         .length;
       // console.log(`correctAnsCount ${correctAnsCount}`);
@@ -166,6 +220,44 @@ exports.getQuestionsStats = async (req, res) => {
       });
     });
     return res.status(StatusCodes.OK).json({ data: response });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'something went wrong while getting questions' });
+  }
+};
+
+// used in extension
+exports.getTodayQuestions = async (req, res) => {
+  const { meetId } = req.params;
+  const date = moment(Date.now()).format('YYYY-MM-DD');
+  try {
+    // check class exists or not
+    const classroom = await Classroom.findOne({ meetId }).select('-users');
+
+    if (!classroom) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: `Classroom with given meetId not found` });
+    }
+    // check for access to add questions in this classrooom
+    if (!classroom.adminId.equals(req.user._id)) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ error: `You don't have access to view this class` });
+    }
+
+    const questions = await Question.find({ meetId, date }).select(
+      'classroomId body adminId broadcasted'
+    );
+    // console.log(questions);
+    if (!questions) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: `Questions not found` });
+    }
+    return res.status(StatusCodes.OK).json({ data: questions });
   } catch (err) {
     console.log(err);
     return res
