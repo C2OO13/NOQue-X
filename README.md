@@ -4,9 +4,11 @@
 
 <a href="https://hack36.com"> <img src="http://bit.ly/BuiltAtHack36" height=20px> </a>
 
-<center>
-  <a herf="">Demo Link</a> • <a href="">PPT Link</a>
-</center>
+<p align="center">
+  <a herf="">Demo Link</a>
+   • 
+   <a href="https://docs.google.com/presentation/d/1H7r74Y8QK3lOkbIKFTp_GUN-KyRN8xbEFrCgHMoxCew/edit?usp=sharing">PPT Link</a>
+</p>
 
 ## The Problem:
 
@@ -20,7 +22,7 @@ So how do we make online classes better and effective? That's where our <b>NOQUE
 
 The problem can be solved if a teacher can know whether a student is both physically and mentally present in the classroom.
 
-Let’s say teacher is going to teach topic A, B, C. He will prepare some short questions for each topic that a student must be able to answer. After he explains a topic, using our extension he can broadcast the question he prepared to all the students in a single click. Students will have to give answer by the time teacher has alloted for that question. Teacher can then move on to next topic and repeat the process when required. Using this, teacher can get feedback of how many students attempted and how many got it correct. Teacher also gets notified if a student who has joined the classroom does anything else except attending the class.
+Let’s say teacher is going to teach topic A, B, C. He will prepare some short questions for each topic that a student must be able to answer. After he explains a topic, using our extension he can broadcast the question he prepared to all the students in a single click. Students will have to give answer by the time teacher has allocated for that question. Teacher can then move on to next topic and repeat the process when required. Using this, teacher can get feedback of how many students attempted and how many got it correct. Teacher also gets notified if a student who has joined the classroom does anything else except attending the class.
 
 ### Techniqual Aspects
 
@@ -32,8 +34,7 @@ Let’s say teacher is going to teach topic A, B, C. He will prepare some short 
 
 - Only the authenticated users who are students of the class can receive the Questions from respective teacher & are able to send responses
 
-
-- Also secured web sockets connections througout the Lecture
+- Also secured websockets connections throughout the Lecture
 
 ### Challanges we ran into
 
