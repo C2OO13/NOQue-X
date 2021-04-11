@@ -5,10 +5,12 @@
 <a href="https://hack36.com"> <img src="http://bit.ly/BuiltAtHack36" height=20px> </a>
 
 <p align="center">
-  <a herf="">Demo Link</a>
-   • 
-   <a href="https://docs.google.com/presentation/d/1H7r74Y8QK3lOkbIKFTp_GUN-KyRN8xbEFrCgHMoxCew/edit?usp=sharing">PPT Link</a>
-</p>
+    <a href="https://youtu.be/q-Npr7mLHXM">Demo Link</a>
+    •
+    <a href="https://docs.google.com/presentation/d/1H7r74Y8QK3lOkbIKFTp_GUN-KyRN8xbEFrCgHMoxCew/edit?usp=sharing" >PPT Link</a>
+  </p>
+
+
 
 ## The Problem:
 
